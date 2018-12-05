@@ -11,6 +11,8 @@ import * as VueRenderPlugin from 'rete-vue-render-plugin';
 
 import { NumComponent } from './components/number-component';
 import { AddComponent } from './components/add-component';
+import { ModuleComponent } from './components/module-component';
+import { FileComponent } from './components/file-component';
 
 @Component({
   selector: 'app-rete-demo',
@@ -31,7 +33,7 @@ export class ReteDemoComponent implements AfterViewInit {
 
     const container = this.el.nativeElement;
 
-    const components = [new NumComponent(), new AddComponent()];
+    const components = [new NumComponent(), new AddComponent(), new ModuleComponent(), new FileComponent()];
 
     const editor = new NodeEditor('demo@0.2.0', container);
     editor.use(ConnectionPlugin);
@@ -47,6 +49,8 @@ export class ReteDemoComponent implements AfterViewInit {
     const n1 = await components[0].createNode({ num: 2 });
     const n2 = await components[0].createNode({ num: 0 });
     const add = await components[1].createNode();
+    const module = await components[2].createNode();
+    const file = await components[3].createNode();
 
     n1.position = [80, 200];
     n2.position = [80, 400];
@@ -55,6 +59,8 @@ export class ReteDemoComponent implements AfterViewInit {
     editor.addNode(n1);
     editor.addNode(n2);
     editor.addNode(add);
+    editor.addNode(module);
+    editor.addNode(file);
 
     editor.connect(
       n1.outputs.get('num'),
@@ -70,6 +76,7 @@ export class ReteDemoComponent implements AfterViewInit {
       async () => {
         await engine.abort();
         await engine.process(editor.toJSON());
+        console.log('New Editor state', editor.toJSON());
       }
     );
 
